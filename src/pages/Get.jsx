@@ -82,34 +82,28 @@ export default function Get() {
           </div>
         </div>
         <div className=" flex flex-wrap ">
-          {data.map((currdata) => {
-            const {
-              image_link,
-              product_type,
-              company_name,
-              description,
-              ask_price,
-              id,
-              available_from,
-              available_till,
-              taluka,
-            } = currdata;
-            return (
-              <>
-                <ProductCard
-                  id={id}
-                  img={image_link}
-                  type={product_type}
-                  company={company_name}
-                  spec={description}
-                  rate={ask_price}
-                  taluka={taluka}
-                  from={available_from}
-                  till={available_till}
-                />
-              </>
-            );
-          })}
+
+        {data.length ? (
+  data.map((currdata) => (
+    <ProductCard
+      key={currdata.id} // Add a unique key prop
+      id={currdata.id}
+      img={currdata.image_link}
+      type={currdata.product_type}
+      company={currdata.company_name}
+      spec={currdata.description}
+      rate={currdata.ask_price}
+      taluka={currdata.taluka}
+      from={currdata.available_from}
+      till={currdata.available_till}
+      
+    />
+  ))
+) : (
+  <p>No products found.</p>
+)}
+
+        
         </div>
       </div>
     </>

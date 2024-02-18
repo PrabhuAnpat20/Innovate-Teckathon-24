@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import Img from "../components/Img";
+
 export default function Book({
   handleModal,
   img,
@@ -64,9 +66,12 @@ export default function Book({
   return ReactDOM.createPortal(
     <>
       <div className="">
-        <div className=" w-3/4 mx-auto rounded-2xl shadow-2xl top-[20%] left-[15%] fixed bg-slate-50 p-10  ">
-          <div className=" flex">
-            <img src={img} alt="" className=" rounded-l-2xl" />
+        <div className=" w-3/4 mx-auto rounded-2xl shadow-2xl top-[20%] left-[15%] fixed bg-slate-50 p-36 ">
+          <div className=" flex justify-evenly">
+          <div className=" rounded-l-2xl w-1/2">
+           <Img publicId={img}/>
+          </div>
+         
             <div className=" text-center p-4">
               <p className=" text-2xl font-bold">{type}</p>
               <p className=" text-xl font-semibold">{company}</p>

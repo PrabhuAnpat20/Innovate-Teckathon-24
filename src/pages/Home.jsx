@@ -1,16 +1,66 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar/Navbar";
 import Button1 from "../components/Buttons/button1";
 import Footer from "../components/footer/Footer";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { NavLink } from "react-router-dom";
+import Img from "../components/Img";
 export default function Home() {
+
+
+
+  // import React, { useState, useEffect } from 'react';
+
+  
+    // const [imageUrl, setImageUrl] = useState('');
+    // const cloudName = 'djwul49pr';
+    // const publicId = 'n7fluvteh4df1x0vfegq';
+    // const imageFormat = 'file'; 
+  
+    // useEffect(() => {
+    //   const fetchImage = async () => {
+    //     try {
+    //       const response = await fetch(
+    //         `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}.${imageFormat}`
+    //       );
+  
+    //       if (!response.ok) {
+    //         throw new Error('Failed to fetch image');
+    //       }
+  
+    //       const data = await response.blob();
+    //       const objectURL = URL.createObjectURL(data);
+  
+    //       setImageUrl(objectURL);
+    //     } catch (error) {
+    //       console.error(error.message);
+    //     }
+    //   };
+  
+    //   fetchImage();
+    // }, [cloudName, publicId, imageFormat]);
+  
+    // return (
+    //   <div>
+    //     <h2>Your Cloudinary Image</h2>
+    //     {imageUrl && <img src={imageUrl} alt="Cloudinary Image" />}
+    //   </div>
+    // );
+  
+  // export default CloudinaryImage;
+  
+
+
+
+
+
   useEffect(() => {
     AOS.init({ duration: "1000" });
   }, []);
   return (
     <>
+     
       <div className="">
         <div className=" bg-green-600 p-5 md:flex ">
           <img src="tractor.webp" alt="" className="" />

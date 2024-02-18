@@ -2,40 +2,35 @@ import React, { useState, useEffect } from "react";
 
 export default function Renting() {
   const [data, setData] = useState([]);
-  const [res, setRes] = useState();
-  const [bookID, setbookID] = useState();
+  const[refresh,setRefresh]=useState(false);
+  const [bookID, setBookID] = useState(); // Use a single state for bookID
 
-  const putreq = async () => {
+  const handleStatusUpdate = async (id, status) => {
     try {
+      setBookID(id); // Set bookID before the PUT request
       const response = await fetch(
-        `http://192.168.137.1:8000/api/update-status/${bookID}/`,
+        "http://192.168.137.1:8000/api/update-status/",
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-        
-            // token: "19227f7f8ce0ef185c0457b74eadd5cb9af69b0c",
             token: localStorage.getItem("token"),
           },
           body: JSON.stringify({
-            status: res, // Assuming res is the status you want to send
-            
+            status, // Pass the status directly
+            id,
           }),
         }
       );
 
       const responseData = await response.json();
-      console.log(responseData);
+      console.log("Response:", responseData);
 
-      // Set the data in the state
-      setData(responseData);
+      setData(responseData); // Update data if needed
     } catch (error) {
-      // Handle errors
-      console.log(error);
+      console.error("Error updating status:", error);
     }
   };
-  const accepted = "accepted";
-  const rejected = "rejected";
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,8 +40,8 @@ export default function Renting() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              token: "19227f7f8ce0ef185c0457b74eadd5cb9af69b0c",
-              httpvinay: "localStorage.getItem('token')",
+              token: localStorage.getItem('token'),
+              // httpvinay: "localStorage.getItem('token')",
             },
           }
         );
@@ -68,7 +63,7 @@ export default function Renting() {
 
     // Call the fetchData function
     fetchData();
-  }, []);
+  }, [handleStatusUpdate]);
 
   return (
     <>
@@ -85,37 +80,31 @@ export default function Renting() {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(data) && data.map((currdata) => (
-              <tr key={currdata.id} className="text-center">
+      {Array.isArray(data) && data.map((currdata) => (
+        <tr key={currdata.id} className="text-center">
                 <td className="border-b text-lg">{currdata.id}</td>
                 <td className="border-b text-lg">{currdata.when_date}</td>
-                <td className="border-b text-lg">{currdata.equipment_type}</td>
+                <td className="border-b text-lg">{currdata.equipement_type}</td>
                 <td className="border-b text-lg">{currdata.price}</td>
+                {/* <td className="border-b text-lg">{currdata.status}</td> */}
                 <td className="border-b text-lg flex justify-center gap-1">
-                  <button
-                    onClick={() => {
-                      setRes(rejected);
-                      setbookID(stringify(currdata.id)); // Make sure to set bookID before calling putreq
-                      putreq();
-                    }}
-                    className="bg-green-500 py-1 px-3 rounded text-white"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => {
-                      setRes(accepted);
-                      setbookID(stringify(currdata.id)); // Make sure to set bookID before calling putreq
-                      putreq();
-                    }}
-                    className="bg-red-500 py-1 px-3 rounded text-white"
-                  >
-                    Reject
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+                  {currdata.status=="pending" ? <> <button
+              onClick={() => handleStatusUpdate(currdata.id, "accepted")}
+              className="bg-green-500 py-1 px-3 rounded text-white"
+            >
+              Accept
+            </button>
+            <button
+              onClick={() => handleStatusUpdate(currdata.id, "rejected")}
+              className="bg-red-500 py-1 px-3 rounded text-white"
+            >
+              Reject
+            </button></>:currdata.status=="accepted"? <div className=" bg-green-500 p-1 w-40">Accepted</div>:<div className=" bg-red-500 p-1 w-40">Rejected</div> }
+         
+          </td>
+        </tr>
+      ))}
+    </tbody>
         </table>
       </div>
     </>

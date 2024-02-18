@@ -3,6 +3,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { NavLink } from "react-router-dom";
 import Book from "../../pages/Book";
+import Img from "../Img";
 
 // import './FlipCard.css';
 export default function ProductCard({
@@ -30,7 +31,7 @@ export default function ProductCard({
           className=" w-[350px] text-center shadow-2xl bg-slate-50 p-5 rounded-2xl m-5"
           data-aos="flip-right"
         >
-          <img src={img} alt="" />
+          <Img publicId={img}/>
           <p className=" font-bold text-3xl">{type}</p>
           <p className=" text-xl">{company}</p>
            <p>{from} -  {till}</p>

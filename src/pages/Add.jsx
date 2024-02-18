@@ -10,43 +10,79 @@ export default function Add() {
   const [fromdate,setFromDate]=useState()
   const [price,setPrice]=useState()
   const[upload,setUpload]=useState(false)
+  const[img,setImg]=useState()
 
+  const[image, setimage]=useState()
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(todate);
-    console.log(fromdate);
-    const UserID = 3;
   
     try {
-      const response = await fetch('http://192.168.137.1:8000/api/postproduct/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'token':localStorage.getItem('token'),
-          'httpvinay':"localStorage.getItem('token')"
-        },
-        body: JSON.stringify({
-          id: UserID,
-          product_type: machinary,
-          company_name: company,
-          description: spec,
-          taluka: taluka,
-          ask_price: price,
-          available_till: todate,
-          available_from: fromdate,
-          pincode: 411046,
-        }),
+      // Upload image
+      const imageData = await submitimage();
+  
+      // Check if the image upload was successful
+      if (imageData && imageData.public_id) {
+        // Image upload successful, now submit the form
+        const response = await fetch('http://192.168.137.1:8000/api/postproduct/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem('token'),
+            'httpvinay': "localStorage.getItem('token')"
+          },
+          body: JSON.stringify({
+            
+            product_type: machinary,
+            company_name: company,
+            description: spec,
+            taluka: taluka,
+            ask_price: price,
+            available_till: todate,
+            available_from: fromdate,
+            pincode: 411046,
+            image_link: imageData.public_id  // Use the public_id from the image upload response
+          }),
+        });
+  
+        if (!response.ok) {
+          alert("error");
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        setUpload(true);
+      } else {
+        // Handle image upload failure
+        console.error('Image upload failed.');
+        alert("error");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert("error");
+    }
+  };
+  
+  const submitimage = async () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "innovate");
+    data.append("cloud_name", "djwul49pr");
+  
+    try {
+      const response = await fetch("https://api.cloudinary.com/v1_1/djwul49pr/image/upload", {
+        method: "POST",
+        body: data
       });
   
       if (!response.ok) {
-        alert("error")
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error('Image upload failed.');
       }
   
-      setUpload(true);
-    } catch (error) {
-      console.error('Error:', error);
-      alert("error")
+      const imageData = await response.json();
+      console.log(imageData);
+      return imageData;
+    } catch (err) {
+      console.error(err);
+      return null;
     }
   };
   
@@ -150,7 +186,7 @@ export default function Add() {
           <label for="image" className="block text-gray-700 font-bold mb-2">
             Upload image:
           </label>
-          {/* <div className="flex items-center justify-center w-full h-32 border-dashed border-2 border-gray-400 rounded-md">
+          <div className="flex items-center justify-center w-full h-32 border-dashed border-2 border-gray-400 rounded-md">
             <label for="image" class="cursor-pointer text-gray-500">
               <svg
                 className="w-6 h-6 mx-auto"
@@ -171,15 +207,17 @@ export default function Add() {
             <input
               type="file"
               id="image"
+              onChange={(e)=>setimage(e.target.files[0])}
               name="image"
               accept="image/*"
               className="hidden"
             />
-          </div> */}
+          </div>
         </div>
 
         <button
-          type="submit"
+          type="submit" 
+          onClick={submitimage}
           className="mt-4  bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
         >
           Submit
